@@ -474,8 +474,10 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+// Moving the pizza Div allows me to only call the DOM once.
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
+  
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -507,10 +509,13 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
+  //items prevents the loop from assigning background pizzas everytime the loop is ran.
+  //scrollT prevents the loop from making the same calculation each time it is ran.
   var items = document.getElementsByClassName("mover");
   var scrollT = document.body.scrollTop / 1250;
+  // Call phase once so that it isn't run every time.
+  var phase = Math.sin(scrollT + (i % 5));
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin(scrollT + (i % 5));
     //console.log(phase, document.body.scrollTop / 1250);
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
@@ -528,11 +533,12 @@ function updatePositions() {
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
+//Change the amount of pizzas rendered in the background from 200 to 30
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < 40; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
